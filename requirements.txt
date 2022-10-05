@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pydantic
+motor
+email-validator
+python-decouple
+starlette
