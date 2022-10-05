@@ -12,7 +12,7 @@ router = APIRouter(tags=['Product'], prefix='/product')
 
 @router.post('/')
 async def create(product: ProductSchema):
-    product_data = await create_product(product: ProductSchema)
+    product_data = await create_product(product)
     if product_data:
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT, 

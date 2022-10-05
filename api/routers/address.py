@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from api.schemas.user import UserSchema
 from api.schemas.address import AddressSchema
 
-router = APIRouter(tags=['User'], prefix='/user')
+router = APIRouter(tags=['Address'], prefix='/address')
 
 @router.get("/{email}/address/")
 async def get_address_by_email(email: EmailStr):
@@ -19,7 +19,6 @@ async def get_address_by_email(email: EmailStr):
         if db.address_db[email].email == email:
             address.append(db.user_db[email])
     return address
-
 
 @router.post("/address/")
 async def create_address(address: AddressSchema):
