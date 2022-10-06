@@ -1,3 +1,4 @@
+from os import environ
 from motor.motor_asyncio import AsyncIOMotorClient
 from api.config import config
 import logging

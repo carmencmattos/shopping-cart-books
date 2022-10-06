@@ -20,18 +20,25 @@ async def create_product(product: ProductSchema):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
 async def get_product_by_id(id: str):
-    product = await db.product_db.find_one({ '_id': ObjectId(id) })
-    if product: 
+  
+    if (product := await  db['product'].find_one({ '_id': ObjectId(id)})) is not None:
         return product
+    raise HTTPException(status_code=404, detail=f"Product {id} not found")
+  
 
 async def get_product_by_title(title: str):
-    product = await db.product_db.find_one({ 'title': title })
-    if product: 
+    if (product := await db['product'].find_one({ 'title': title })) is not None:
         return product
+    raise HTTPException(status_code=404, detail=f"Product {id} not found")
     
 async def update_product_by_id(id: str, product: ProductSchema):
-    await db.product_db.update_product_by_id({ 'id': ObjectId(id), 'product': product }) 
-    return product
+    #tem que fazer as regras do update
+    update_product = await  db['product'].update_one({ '_id':  ObjectId(id), 'product': product }) 
+    return update_product
 
 async def delete_product_by_id(id: str):
-    await db.product_db.delete_product_by_id({ '_id': ObjectId(id) })
+    delete_product = await db['product'].delete_one({ '_id': ObjectId(id) })
+    if  delete_product.deleted_count == 1:
+        return HTTPException(status_code=status.HTTP_204_NO_CONTENT)
+
+    raise HTTPException(status_code=404, detail=f"Product {id} deleted") 

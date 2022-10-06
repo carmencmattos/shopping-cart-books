@@ -1,4 +1,6 @@
 from api.schemas.inventory import InventorySchema
+from api.schemas.address import AddressSchema
+from api.schemas.product import ProductSchema
 from .schemas.user import UserSchema
 from .schemas.product import ProductSchema
 class serialize:
@@ -8,6 +10,13 @@ class serialize:
         user['updated_at'] = str(user['updated_at'])
         del user['password']
         return user
+
+    def address(address: AddressSchema):
+        address['_id'] = str(address['_id'])
+        address['_id'] = str(address['created_at'])
+        address['_id'] = str(address['updated_at'])
+        return address
+
 
     def product(product: ProductSchema):
         product['_id'] = str(product['_id'])
