@@ -1,3 +1,4 @@
+from os import environ
 from motor.motor_asyncio import AsyncIOMotorClient
 from api.config import config
 import logging
@@ -7,10 +8,11 @@ db_name = 'luiza_cart'
 
 class Database():
     client: AsyncIOMotorClient = None
-    user_db: None
-    address_db: None
-    product_db: None
-    cart_db: None
+    database_uri = environ.get("DATABASE_URI")
+    user_db = None
+    address_db = None
+    product_db = None
+    cart_db = None
 
 db = Database()
 
