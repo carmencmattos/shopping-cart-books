@@ -12,12 +12,8 @@ router = APIRouter(tags=['Product'], prefix='/product')
 
 @router.post('/')
 async def create(product: ProductSchema):
-    #não está pronto, estou vendo comoo pegar o titulo do produto 
-    check_product = get_product_by_title(title)
-    if check_product is None:
-        created_product = create_product(product)
-        return JSONResponse(status_code=status.HTTP_200_OK, content=created_product)
-    else:
+    product_data = await create_product(product)
+    if product_data:
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT, 
             content={'message': 'Este produto já está cadastrado no Banco.'})
