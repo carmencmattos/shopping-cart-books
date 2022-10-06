@@ -11,6 +11,7 @@ class Database():
     address_db: None
     product_db: None
     cart_db: None
+    inventory_db: None
 
 db = Database()
 
@@ -19,6 +20,7 @@ async def connect():
     db.user_db = db.client[db_name].user
     db.product_db = db.client[db_name].product
     db.cart_db = db.client[db_name].cart
+    db.inventory_db = db.client[db_name].inventory
     logging.info('Base de dados conectada !')
 
 async def disconnect():

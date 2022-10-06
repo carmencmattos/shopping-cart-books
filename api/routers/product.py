@@ -1,3 +1,4 @@
+from api.cruds.inventory import add_to_inventory
 from api.utils import serialize
 from api.cruds.product import create_product, get_product_by_id, get_product_by_title, update_product_by_id, delete_product_by_id
 from api.schemas.product import ProductSchema
@@ -12,18 +13,12 @@ router = APIRouter(tags=['Product'], prefix='/product')
 
 @router.post('/')
 async def create(product: ProductSchema):
-    product_data = await create_product(product: ProductSchema)
-    if product_data:
-        return JSONResponse(
-            status_code=status.HTTP_409_CONFLICT, 
-            content={'message': 'Este produto já está cadastrado no Banco.'})
-    
     create = await create_product(product)
     if create:
-        product = serialize.product(create)
-        return JSONResponse(status_code=status.HTTP_200_OK, content=product)
-    
-    
+        update_inventory = await add_to_inventory(create)
+        if update_inventory and create:
+            inventory = serialize.inventory(update_inventory)
+            return JSONResponse(status_code=status.HTTP_200_OK, content=inventory)
     
 @router.get('/{id}')
 async def get_product_by_id(id: str):

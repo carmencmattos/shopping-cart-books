@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, confloat, conint
 from datetime import datetime
 
 class ProductSchema(BaseModel):
@@ -7,12 +7,13 @@ class ProductSchema(BaseModel):
     author: str
     publishing_company: str
     year: int
+    edition: int
     gener: str
     description: str
-    ISBN: str
+    isbn: str
     language: str
     pages: int
-    price: float = Field(min_length = float > 0.01)
-    inventory: int = Field(min_length = int > 0)
+    price: confloat(gt=0.01)
+    quantity: conint(gt=0)
     created_at: datetime = Field(datetime.now())
     updated_at: datetime = Field(datetime.now())

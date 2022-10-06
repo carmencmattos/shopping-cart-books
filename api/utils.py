@@ -1,3 +1,4 @@
+from api.schemas.inventory import InventorySchema
 from .schemas.user import UserSchema
 from .schemas.product import ProductSchema
 class serialize:
@@ -14,3 +15,8 @@ class serialize:
         product['updated_at'] = str(product['updated_at'])
         return product
         
+    def inventory(inventory: InventorySchema):
+        inventory['_id'] = str(inventory['_id'])
+        inventory['product']['updated_at'] = str(inventory['product']['updated_at'])
+        inventory['product']['created_at'] = str(inventory['product']['created_at'])
+        return inventory

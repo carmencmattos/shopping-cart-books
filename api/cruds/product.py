@@ -8,10 +8,12 @@ logger = logging.getLogger(__name__)
 
 async def create_product(product: ProductSchema):
     try:
-        product = await db.product_db.insert_one(product.dict())
+        ups_product = await db.product_db.replace_one({"isbn": product.isbn}, product.dict(), upsert=True)
 
-        if product.inserted_id:
-            product = await get_product_by_id(product.inserted_id)
+        if ups_product.upserted_id:
+            new_product = await get_product_by_id(ups_product.upserted_id)
+            return new_product
+        else:
             return product
     except Exception as e:
         logger.exception(f'Error: {e}')
