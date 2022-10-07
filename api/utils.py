@@ -26,6 +26,4 @@ class serialize:
         
     def inventory(inventory: InventorySchema):
         inventory['_id'] = str(inventory['_id'])
-        inventory['product']['updated_at'] = str(inventory['product']['updated_at'])
-        inventory['product']['created_at'] = str(inventory['product']['created_at'])
         return inventory

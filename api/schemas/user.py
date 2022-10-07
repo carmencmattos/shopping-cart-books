@@ -12,3 +12,9 @@ class UserSchema(BaseModel):
     admin: bool = Field(default=False)
     created_at: datetime = Field(datetime.now())
     updated_at: datetime = Field(datetime.now())
+
+
+
+
+
+    

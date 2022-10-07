@@ -1,9 +1,8 @@
-from datetime import datetime
-from pydantic import BaseModel, Field
-from datetime import datetime
-
-from api.schemas.product import ProductSchema
+from pydantic import BaseModel
 
 class InventorySchema(BaseModel):
-    product: ProductSchema
+    isbn: str
+    inventory: int
+
+class InventoryUpdateSchema(BaseModel):
     inventory: int

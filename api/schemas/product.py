@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, Field, confloat, conint
 from datetime import datetime
 
@@ -17,3 +18,15 @@ class ProductSchema(BaseModel):
     quantity: conint(gt=0)
     created_at: datetime = Field(datetime.now())
     updated_at: datetime = Field(datetime.now())
+
+class ProductUpdateSchema(BaseModel):
+    title: Optional[str]
+    author: Optional[str]
+    publishing_company: Optional[str]
+    year: Optional[int]
+    edition: Optional[int]
+    gener: Optional[str]
+    description: Optional[str]
+    language: Optional[str]
+    pages: Optional[int]
+    price: Optional[confloat(gt=0.01)]

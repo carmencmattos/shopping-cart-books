@@ -1,11 +1,7 @@
 from api.server.database import db
 from pydantic import EmailStr
-from api.utils import serialize
 from fastapi import APIRouter, status
-from api.cruds.user import get_user_by_email, get_users
-from api.cruds.address import create_address, get_user_by_email, get_users
 from starlette.responses import JSONResponse
-from api.schemas.user import UserSchema
 from api.schemas.address import AddressSchema
 
 router = APIRouter(tags=['Address'], prefix='/address')
@@ -39,3 +35,7 @@ async def delete_address(id_address: int):
     if id in db.user_db:
         return id[id].address.pop(id_address)
     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
+
+@router.get('/')
+async def teste():
+    return 'teste'
