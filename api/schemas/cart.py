@@ -6,13 +6,13 @@ from datetime import datetime
 from api.schemas.user import UserSchema
 from typing import List
 class CartListSchema(BaseModel):
-    product: ProductSchema
-    qt_product: int 
+    isbn: str
+    quantity: int = Field(default=0)
+
 class CartSchema(BaseModel):
-    client: UserSchema
+    user_email: EmailStr
     open: bool = Field(default=True)
     product: List[CartListSchema] = []
-    active: bool = Field(default=True)
     created_at: datetime = Field(datetime.now())
     updated_at: datetime = Field(datetime.now())
 

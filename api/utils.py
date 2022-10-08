@@ -1,3 +1,4 @@
+from api.schemas.cart import CartSchema
 from api.schemas.inventory import InventorySchema
 from api.schemas.address import AddressSchema
 from api.schemas.product import ProductSchema
@@ -27,3 +28,9 @@ class serialize:
     def inventory(inventory: InventorySchema):
         inventory['_id'] = str(inventory['_id'])
         return inventory
+
+    def cart(cart: CartSchema):
+        cart['_id'] = str(cart['_id'])
+        cart['created_at'] = str(cart['created_at'])
+        cart['updated_at'] = str(cart['updated_at'])
+        return cart
