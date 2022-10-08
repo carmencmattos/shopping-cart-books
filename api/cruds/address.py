@@ -1,59 +1,38 @@
-import email
 from api.schemas.address import AddressSchema
 from api.server.database import db
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
 import logging
-from pydantic.networks import EmailStr
 from api.utils import serialize
+from pydantic.networks import EmailStr
 
 logger = logging.getLogger(__name__)
 
 # Consultar um endereço pelo id do usuário.
-async def get_address_by_user_id(user_id: str):
+async def get_address_by_user_id(id: str):
     try:
-        data = await db.address_db.find_one({'user._id': user_id})
+        data = await db.address_db.find_one({'_id': ObjectId(id)})
         if data:
             return data
     except Exception as e:
         print(f'get_address.error: {e}')
-        
+
 # Cadastrar um endereço para um usuário.  
 async def create_address(address: AddressSchema):
     try:
-        address = await db.address_db.insert_one(address.dict())
-
-        if address.inserted_id:
-            address = await get_address_by_user_id(address.inserted_id)
-            return address
-    except Exception as e:
-        logger.exception(f'Error: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-    
-# Adicionar um novo endereço para um usuário.
-async def insert_new_address(address_id, new_object_address):
-    try:
-        address = await db.address_db.update_one(
-            {"_id": address_id},
-            {
-                '$addToSet': {
-                    'address': new_object_address
-                }
-            }
-        )
-        if address.modified_count:
-            # Função para buscar endereço e retornar
-            address = await get_address_by_email(db.address_db, email)
-            return address
-
+        await set_delivery(address.user_email)
+        create_data = await db.address_db.insert_one(address.dict())
+        if create_data.inserted_id:
+            created = await get_address_by_user_id(create_data.inserted_id)
+            return created
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
         
 # Consultar um endereço pelo e-mail do usuário.
-async def get_address_by_email(email):
+async def get_address_by_id(id: str):
     try:
-        data = await db.address_db.find({'email': email})
+        data = await db.address_db.find_one({'_id': ObjectId(id)})
         if data:
             return data
     except Exception as e:
@@ -67,12 +46,12 @@ async def get_address_by_id(id: str):
         return address
 
 # Consultar endereços.
-async def get_adresses(skip, limit):  #Paginação
-    try:
-        address_cursor = db.address_db.find().skip(int(skip)).limit(int(limit))
-        adresses = await address_cursor.to_list(length=int(limit))
-        return adresses
-
+async def get_addresses(email: EmailStr):
+    try: 
+        data = []
+        async for addresses in db.address_db.find({ 'user_email': email }):
+            data.append(serialize.address(addresses))
+        return data
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
@@ -85,6 +64,23 @@ async def delete_address(address_id):
         )
         if address.deleted_count:
             return {'status': 'address deleted'}
+    except Exception as e:
+        logger.exception(f'Error: {e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+# Reseta todos os campos delivery para false por email do usuario
+async def set_delivery(email: EmailStr):
+    setDelivevry = await db.address_db.update_many({ 'user_email': email }, { '$set': { 'delivery': False } })
+    if setDelivevry.modified_count:
+        return True
+
+async def set_principal_address(id: str, user_email: EmailStr):
+    try:
+        await set_delivery(user_email)
+        update = await db.address_db.update_one({ '_id': ObjectId(id) }, { '$set': { 'delivery': True } })
+        if update.modified_count:
+            address = await get_address_by_id(id)
+            return address
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

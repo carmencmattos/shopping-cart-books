@@ -13,8 +13,8 @@ class serialize:
 
     def address(address: AddressSchema):
         address['_id'] = str(address['_id'])
-        address['_id'] = str(address['created_at'])
-        address['_id'] = str(address['updated_at'])
+        address['created_at'] = str(address['created_at'])
+        address['updated_at'] = str(address['updated_at'])
         return address
 
 

@@ -1,3 +1,4 @@
+from api.cruds.address import create_address
 from api.schemas.user import UserSchema
 from api.server.database import db
 from fastapi import HTTPException, status
@@ -22,31 +23,30 @@ async def create_user(user: UserSchema):
 
 # Consultar um usuário pelo seu id.
 async def get_user_by_id(id: str):
-    user = await db.user_db.find_one({ '_id': ObjectId(id) })
+    user = await db.user_db.find_one({ '_id': ObjectId(id), 'active': True })
     if user: 
         return user
 
 # Consultar um usuário pelo pelo seu email.
 async def get_user_by_email(email: EmailStr):
-    user = await db.user_db.find_one({ 'email': email })
+    user = await db.user_db.find_one({ 'email': email, 'active': True })
     if user: 
         return user
 
 # Consultar usuários.
 async def get_users():
     data = []
-    async for user in db.user_db.find():
+    async for user in db.user_db.find({ 'active': True }):
         data.append(serialize.user(user))
     return data
 
-# Deletar usuário.
-async def delete_user(user_id):
+# Desativar usuário.
+async def deactivate_user_by_id(id: str):
     try:
-        user = await db.users_db.delete_one(
-            {'_id': user_id}
-        )
-        if user.deleted_count:
-            return {'status': 'User deleted'} 
+        update = await db.user_db.update_one({ '_id': ObjectId(id) }, { '$set': { 'active': False } })
+        if update.modified_count:
+            user = await get_user_by_id(id)
+            return user
     except Exception as e:
         logger.exception(f'Error: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)    

@@ -22,6 +22,7 @@ async def connect():
     db.product_db = db.client[db_name].product
     db.cart_db = db.client[db_name].cart
     db.inventory_db = db.client[db_name].inventory
+    db.address_db = db.client[db_name].address
     logging.info('Base de dados conectada !')
 
 async def disconnect():
