@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status
 from pydantic.networks import EmailStr
-from api.cruds.cart import add_product_cart, create_cart, get_cart_by_email, insert_product, remove_item_from_cart, update_product_cart
+from api.cruds.cart import add_product_cart, calculate_cart, create_cart, get_cart_by_email, insert_product, remove_item_from_cart, update_product_cart
 from api.cruds.inventory import get_inventory_by_isbn
+from api.cruds.product import get_product_by_isbn
 from api.schemas.cart import CartListSchema
 from api.utils import serialize
 from starlette.responses import JSONResponse
@@ -53,9 +54,11 @@ async def additem(email: EmailStr, item: CartListSchema ):
                     # Se a atualização foi realizada com sucesso
                     if update_product:
 
+                        calculate = await calculate_cart(update_product)
+
                         # Retorna o carrinho atualizado e serializado
-                        cart = serialize.cart(update_product)
-                        return JSONResponse(status_code=status.HTTP_200_OK, content=cart)
+                        return_object = { 'cart': serialize.cart(calculate['data_cart']), 'payments': calculate['total_info'], 'total_cart': calculate['total'] }
+                        return JSONResponse(status_code=status.HTTP_200_OK, content=return_object)
 
                 # Se NÃO tiver encontrado algum produto no carrinho igual ao do usuário    
                 else:
@@ -66,9 +69,11 @@ async def additem(email: EmailStr, item: CartListSchema ):
                     # Se adicionou o produto com sucesso
                     if add_product_in_cart:
 
+                        calculate = await calculate_cart(add_product_in_cart)
+
                         # Retorna o carrinho atualizado e serializado
-                        cart = serialize.cart(add_product_in_cart)
-                        return JSONResponse(status_code=status.HTTP_200_OK, content=cart)
+                        return_object = { 'cart': serialize.cart(calculate['data_cart']), 'payments': calculate['total_info'], 'total_cart': calculate['total'] }
+                        return JSONResponse(status_code=status.HTTP_200_OK, content=return_object)
 
             # Se não tiver carrinho aberto para o usuário
             else:
@@ -78,10 +83,10 @@ async def additem(email: EmailStr, item: CartListSchema ):
 
                 # Se criou o carrinho aberto com o produto adicionado com suceeeo
                 if create:
-
-                    # Retorna o carrinho atualizado e serializado
-                    cart = serialize.cart(create)
-                    return JSONResponse(status_code=status.HTTP_200_OK, content=cart)
+                    calculate = await calculate_cart(create)
+                    return_object = { 'cart': serialize.cart(calculate['data_cart']), 'payments': calculate['total_info'], 'total_cart': calculate['total'] }
+                    return JSONResponse(status_code=status.HTTP_200_OK, content=return_object)
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'message': 'Este produto ultrapassa o limite do estoque.'})
 
 @router.patch('/{email}/removeitem')
 async def removeitem(email: EmailStr, isbn: str):

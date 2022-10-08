@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 import logging
 from pydantic.networks import EmailStr
 from datetime import datetime
+from api.cruds.product import get_product_by_isbn
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +66,34 @@ async def remove_item_from_cart(email: EmailStr, isbn: str):
         remove_item = await db.cart_db.update_one({ 'user_email': email }, { '$pull': { 'product': { 'isbn': isbn } } })
         if remove_item.modified_count:
             return True
+    except Exception as e:
+        logger.exception(f'Error: {e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+async def calculate_cart(data_cart):
+    try:
+        product_info = []
+        for products in data_cart['product']:
+            data = await get_product_by_isbn(products['isbn'])
+            del data['quantity']
+            data['quantity'] = products['quantity']
+            product_info.append(data)  
+
+        del data_cart['product']
+        data_cart['product'] = product_info
+
+        total_info = []
+        for prd_info in data_cart['product']:
+            calc = prd_info['quantity'] * prd_info['price']
+            total_per_product_info = dict(isbn=prd_info['isbn'], quantity=prd_info['quantity'], price=prd_info['price'], total_price=calc)
+            total_info.append(total_per_product_info)
+
+        total_cart = { 'total': 0 }
+        for final_info in total_info:
+            total_cart['total'] += final_info['total_price']
+
+        response = { 'data_cart': data_cart, 'total_info': total_info, 'total': total_cart }
+        return response
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

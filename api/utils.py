@@ -33,4 +33,8 @@ class serialize:
         cart['_id'] = str(cart['_id'])
         cart['created_at'] = str(cart['created_at'])
         cart['updated_at'] = str(cart['updated_at'])
+        for data in cart['product']:
+            data['_id'] = str(data['_id'])
+            del data['created_at']
+            del data['updated_at']
         return cart
