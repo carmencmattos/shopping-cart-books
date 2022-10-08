@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from api.server.database import db
-from api.schemas.cart import CartListSchema, CartSchema
+from api.schemas.cart import CartListSchema
 from bson.objectid import ObjectId
 import logging
 from pydantic.networks import EmailStr
@@ -36,16 +36,35 @@ async def insert_product(email: EmailStr, products: CartListSchema):
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-async def update_to_set(products):
+async def update_product_cart(products, has_cart):
     try:
-        cart = await db.cart_db.update_one({ 'product.isbn': products['isbn'] }, { '$set': { 'product': [products] } } , upsert=True )
+        remove_item = await remove_item_from_cart(has_cart['user_email'], products['isbn'])
+        if remove_item:
+            add_product_cart = await db.cart_db.update_one({ 'user_email': has_cart['user_email'] }, { '$addToSet': { 'product': products } })
+            if add_product_cart.matched_count:
+                cart_updated = await get_cart_by_email(has_cart['user_email'])
+                if cart_updated:
+                    return cart_updated
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-async def add_to_set(email, products):
+async def add_product_cart(email: EmailStr, products):
     try:
-        cart = await db.cart_db.update_one({ 'user_email': email }, { '$addToSet': { 'product': products } })
+        add_product_cart = await db.cart_db.update_one({ 'user_email': email }, { '$addToSet': { 'product': products } })
+        if add_product_cart.matched_count:
+            cart_updated = await get_cart_by_email(email)
+            if cart_updated:
+                return cart_updated
+    except Exception as e:
+        logger.exception(f'Error: {e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+async def remove_item_from_cart(email: EmailStr, isbn: str):
+    try:
+        remove_item = await db.cart_db.update_one({ 'user_email': email }, { '$pull': { 'product': { 'isbn': isbn } } })
+        if remove_item.modified_count:
+            return True
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

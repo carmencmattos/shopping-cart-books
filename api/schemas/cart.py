@@ -2,9 +2,8 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 from pydantic.networks import EmailStr
 from datetime import datetime
-
-from api.schemas.user import UserSchema
 from typing import List
+
 class CartListSchema(BaseModel):
     isbn: str
     quantity: int = Field(default=0)

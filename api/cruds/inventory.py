@@ -4,6 +4,7 @@ from api.server.database import db
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
 import logging
+from pydantic.networks import EmailStr
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +48,7 @@ async def get_inventory_by_id(id: str):
 async def get_inventory_by_isbn(isbn: str):
     inventory = await db.inventory_db.find_one({ 'isbn': isbn })
     if inventory:
-        return inventory
+        return inventory    
 
 async def update_inventory_by_isbn(isbn: str, inventory_fields: InventoryUpdateSchema):
     try:
