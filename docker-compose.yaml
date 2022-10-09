@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  api:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      DB_HOST: mongodb://uri-de-conexao
+      APP_HOST: 
+      JWT_SECRET_KEY: chave_super_secreta
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRES_IN_MIN: 3000
+    ports:
+      - 8000:8000
