@@ -1,41 +1,46 @@
-from api.server.database import db
-from pydantic import EmailStr
-from api.utils import serialize
+from api.cruds.address import create_address, delete_address, get_address_by_id, get_addresses, set_principal_address
+from api.cruds.user import get_user_by_email
+from pydantic.networks import EmailStr
 from fastapi import APIRouter, status
-from api.cruds.user import get_user_by_email, get_users
-from api.cruds.address import create_address, get_user_by_email, get_users
 from starlette.responses import JSONResponse
-from api.schemas.user import UserSchema
 from api.schemas.address import AddressSchema
+from api.utils import serialize
 
 router = APIRouter(tags=['Address'], prefix='/address')
 
-@router.get("/{email}/address/")
+# Busca todos os enderecos vinculados a um email
+@router.get("/{email}")
 async def get_address_by_email(email: EmailStr):
-    address = []
-    if email not in db.user_db:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
-    for email in db.address_db:
-        if db.address_db[email].email == email:
-            address.append(db.user_db[email])
-    return address
+    addresses = await get_addresses(email)
+    if addresses:
+        return JSONResponse(status_code=status.HTTP_200_OK, content=addresses)
 
-@router.post("/address/")
-async def create_address(address: AddressSchema):
-    if address.email not in db.user_db:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
-    if address.id in db.address_db:
-        return JSONResponse(
-            status_code=status.HTTP_409_CONFLICT, 
-            content={'message': 'Este endereço já está cadastrado.'})
-    id_new_address = len(list(db.address_db)) + 1
-    address.id = id_new_address
-    db.address_db[id_new_address] = address
-    return JSONResponse(status_code=status.HTTP_200_OK, content=address)
+# Adiciona um novo endereco a um usuario
+@router.post("/")
+async def create(address: AddressSchema):
+    user_data = await get_user_by_email(address.user_email)
+    if user_data:
+        user_address = await create_address(address)
+        if user_address:
+            address = serialize.address(user_address)
+            return JSONResponse(status_code=status.HTTP_200_OK, content=address)
+    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND)
 
-
+# Deleta um endereco de um usuario por id do endereco
 @router.delete("/{id_address}")
-async def delete_address(id_address: int):
-    if id in db.user_db:
-        return id[id].address.pop(id_address)
+async def delete(id_address: str):
+    deleted = await delete_address(id_address)
+    if deleted:
+        return JSONResponse(status_code=status.HTTP_200_OK, content=deleted)
     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
+
+# Seleciona o endere;o de entrega
+@router.patch("/delivery/{id}")
+async def set_principal(id: str):
+    address = await get_address_by_id(id)
+    if (address):
+        setDelivery = await set_principal_address(id, address['user_email'])
+        if setDelivery:
+            delivery = serialize.address(setDelivery)
+            return JSONResponse(status_code=status.HTTP_200_OK, content=delivery)
+    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND)

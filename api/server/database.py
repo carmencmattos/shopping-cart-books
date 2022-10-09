@@ -8,11 +8,12 @@ db_name = 'luiza_cart'
 
 class Database():
     client: AsyncIOMotorClient = None
-    database_uri = environ.get("DATABASE_URI")
-    user_db = None
-    address_db = None
-    product_db = None
-    cart_db = None
+    user_db: None
+    address_db: None
+    product_db: None
+    cart_db: None
+    inventory_db: None
+    order_db: None
 
 db = Database()
 
@@ -21,6 +22,9 @@ async def connect():
     db.user_db = db.client[db_name].user
     db.product_db = db.client[db_name].product
     db.cart_db = db.client[db_name].cart
+    db.inventory_db = db.client[db_name].inventory
+    db.address_db = db.client[db_name].address
+    db.order_db = db.client[db_name].order
     logging.info('Base de dados conectada !')
 
 async def disconnect():

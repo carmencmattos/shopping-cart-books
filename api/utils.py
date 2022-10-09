@@ -1,3 +1,5 @@
+from api.schemas.cart import CartSchema
+from api.schemas.inventory import InventorySchema
 from api.schemas.address import AddressSchema
 from api.schemas.product import ProductSchema
 from .schemas.user import UserSchema
@@ -12,8 +14,8 @@ class serialize:
 
     def address(address: AddressSchema):
         address['_id'] = str(address['_id'])
-        address['_id'] = str(address['created_at'])
-        address['_id'] = str(address['updated_at'])
+        address['created_at'] = str(address['created_at'])
+        address['updated_at'] = str(address['updated_at'])
         return address
 
 
@@ -23,3 +25,22 @@ class serialize:
         product['updated_at'] = str(product['updated_at'])
         return product
         
+    def inventory(inventory: InventorySchema):
+        inventory['_id'] = str(inventory['_id'])
+        return inventory
+
+    def cart(cart: CartSchema):
+        cart['_id'] = str(cart['_id'])
+        cart['created_at'] = str(cart['created_at'])
+        cart['updated_at'] = str(cart['updated_at'])
+        for data in cart['product']:
+            data['_id'] = str(data['_id'])
+            del data['created_at']
+            del data['updated_at']
+        return cart
+
+    def get_cart(cart):
+        cart['_id'] = str(cart['_id'])
+        cart['created_at'] = str(cart['created_at'])
+        cart['updated_at'] = str(cart['updated_at'])
+        return cart

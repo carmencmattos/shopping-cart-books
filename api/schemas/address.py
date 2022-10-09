@@ -1,11 +1,10 @@
 from typing import List
 from pydantic import BaseModel, Field
+from pydantic.networks import EmailStr
 from datetime import datetime
-from api.schemas.user import UserSchema
 
-
-class Address(BaseModel):
-    id_user: int
+class AddressSchema(BaseModel):
+    user_email: EmailStr
     street: str
     number: int
     complement: str
@@ -16,8 +15,3 @@ class Address(BaseModel):
     delivery: bool = Field(default=True)
     created_at: datetime = Field(datetime.now())
     updated_at: datetime = Field(datetime.now())
-
-
-class AddressSchema(BaseModel):
-    user: UserSchema
-    address: List[Address] = []

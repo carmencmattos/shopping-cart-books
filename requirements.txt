@@ -5,3 +5,5 @@ motor
 email-validator
 python-decouple
 starlette
+datetime
+numpy
