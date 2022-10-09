@@ -8,11 +8,11 @@ from api.providers import token_provider
 oauth2_schema = OAuth2PasswordBearer(tokenUrl='token')
 
 
-async def obter_usuario_logado(token: str = Depends(oauth2_schema)):
+async def get_user_logged(token: str = Depends(oauth2_schema)):
     exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid Token')
     try:
-        email = token_provider.verificar_acess_token(token)
+        email = token_provider.verify_access_token(token)
     except JWTError:
         raise exception
 

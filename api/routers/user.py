@@ -1,4 +1,4 @@
-from api.routers.auth_utils import obter_usuario_logado
+from api.routers.auth_utils import get_user_logged
 from api.server.database import db
 from pydantic.networks import EmailStr
 from api.utils import serialize
@@ -13,7 +13,7 @@ router = APIRouter(tags=['User'], prefix='/user')
 
 
 @router.post('/')
-async def create(user: UserSchema, authenticated_user: UserSchema = Depends(obter_usuario_logado)):
+async def create(user: UserSchema, authenticated_user: UserSchema = Depends(get_user_logged)):
     if authenticated_user['admin']:
         email = user.email
         user_data = await get_user_by_email(email)
@@ -45,7 +45,7 @@ async def all():
 
 
 @router.get('/me')
-def me(authenticated_user: UserSchema = Depends(obter_usuario_logado)):
+def me(authenticated_user: UserSchema = Depends(get_user_logged)):
     user = serialize.user(authenticated_user)
     return user
 

@@ -2,8 +2,10 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=['bcrypt'])
 
-def verificar_hash(text_plano, texto_hashed):
-    return pwd_context.verify(text_plano, texto_hashed)
 
-def gerar_hash(texto_plano):
-    return pwd_context.hash(texto_plano)
+def verify_hash(text, text_hashed):
+    return pwd_context.verify(text, text_hashed)
+
+
+def create_hash(text):
+    return pwd_context.hash(text)
