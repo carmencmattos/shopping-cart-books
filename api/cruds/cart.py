@@ -1,11 +1,12 @@
 from fastapi import HTTPException, status
 from api.server.database import db
-from api.schemas.cart import CartListSchema
+from api.schemas.cart import CartListSchema, CartSchema
 from bson.objectid import ObjectId
 import logging
 from pydantic.networks import EmailStr
 from datetime import datetime
 from api.cruds.product import get_product_by_isbn
+from api.cruds.order import get_order_by_id
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +64,7 @@ async def add_product_cart(email: EmailStr, products):
 
 async def remove_item_from_cart(email: EmailStr, isbn: str):
     try:
-        remove_item = await db.cart_db.update_one({ 'user_email': email }, { '$pull': { 'product': { 'isbn': isbn } } })
+        remove_item = await db.cart_db.update_one({ 'user_email': email, 'open': True }, { '$pull': { 'product': { 'isbn': isbn } } })
         if remove_item.modified_count:
             return True
     except Exception as e:
@@ -97,3 +98,18 @@ async def calculate_cart(data_cart):
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+async def delete_cart_by_email(cart: CartSchema):
+    try:
+        del cart['open']
+        cart['open'] = False
+        to_order = await db.order_db.insert_one(cart)
+        if to_order.inserted_id:
+            delete = await db.cart_db.delete_one({ '_id': ObjectId(cart['_id']) })
+            if delete.deleted_count:
+                order = await get_order_by_id(to_order.inserted_id)
+                if order:
+                    return order
+    except Exception as e:
+        logger.exception(f'Error: {e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)  

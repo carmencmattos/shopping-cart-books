@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 from pydantic.networks import EmailStr
-from api.cruds.cart import add_product_cart, calculate_cart, create_cart, get_cart_by_email, insert_product, remove_item_from_cart, update_product_cart
+from api.cruds.cart import add_product_cart, calculate_cart, create_cart, delete_cart_by_email, get_cart_by_email, insert_product, remove_item_from_cart, update_product_cart
 from api.cruds.inventory import get_inventory_by_isbn
 from api.cruds.product import get_product_by_isbn
 from api.schemas.cart import CartListSchema
@@ -87,7 +87,34 @@ async def additem(email: EmailStr, item: CartListSchema ):
                     return_object = { 'cart': serialize.cart(calculate['data_cart']), 'payments': calculate['total_info'], 'total_cart': calculate['total'] }
                     return JSONResponse(status_code=status.HTTP_200_OK, content=return_object)
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'message': 'Este produto ultrapassa o limite do estoque.'})
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'message': 'O produto enviado não existe no estoque'})
 
-@router.patch('/{email}/removeitem')
+@router.patch('/{email}/removeitem/{isbn}')
 async def removeitem(email: EmailStr, isbn: str):
-    remove = await remove_item_from_cart(email, isbn)
+    cart = await get_cart_by_email(email)
+    if cart:
+        remove = await remove_item_from_cart(email, isbn)
+        if remove:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={'message': 'Item removido do carrinho com sucesso'})
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'message': 'O produto enviado não existe no carrinho'})
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'message': 'Usuário ou Carrinho inexistente'})
+
+@router.get('/{email}')
+async def get_cart(email: EmailStr):
+    get_cart = await get_cart_by_email(email)
+    if get_cart:
+        cart = await calculate_cart(get_cart)
+        return_object = { 'cart': serialize.cart(cart['data_cart']), 'payments': cart['total_info'], 'total_cart': cart['total'] }
+        return JSONResponse(status_code=status.HTTP_200_OK, content=return_object)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'message': 'Email ou Carrinho inexistentes'})
+
+@router.delete('/{email}')
+async def close_cart(email: EmailStr):
+    get_cart = await get_cart_by_email(email)
+    if get_cart:
+        delete_cart = await delete_cart_by_email(get_cart)
+        if delete_cart:
+            cart = await calculate_cart(get_cart)
+            return_object = { 'cart': serialize.cart(cart['data_cart']), 'payments': cart['total_info'], 'total_cart': cart['total'] }
+            return JSONResponse(status_code=status.HTTP_200_OK, content=return_object)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'message': 'Email ou Carrinho inexistentes'})

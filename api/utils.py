@@ -38,3 +38,9 @@ class serialize:
             del data['created_at']
             del data['updated_at']
         return cart
+
+    def get_cart(cart):
+        cart['_id'] = str(cart['_id'])
+        cart['created_at'] = str(cart['created_at'])
+        cart['updated_at'] = str(cart['updated_at'])
+        return cart
