@@ -1,7 +1,7 @@
 from api.schemas.auth import LoginData, SignUpSchema
 from api.utils import serialize
 from fastapi import APIRouter, status
-from api.cruds.user import create_user, get_user_by_email
+from api.controllers.user import create_user, get_user_by_email
 from starlette.responses import JSONResponse
 from api.schemas.user import UserSchema
 from api.providers import hash_provider, token_provider

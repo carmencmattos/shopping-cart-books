@@ -1,4 +1,4 @@
-from api.cruds.address import create_address
+from api.controllers.address import create_address
 from api.schemas.user import UserSchema
 from api.server.database import db
 from fastapi import HTTPException, status
