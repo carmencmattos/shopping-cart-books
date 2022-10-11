@@ -3,7 +3,7 @@ from api.server.database import db
 from pydantic.networks import EmailStr
 from api.utils import serialize
 from fastapi import APIRouter, Depends, HTTPException, status
-from api.cruds.user import create_user, deactivate_user_by_id, get_user_by_email, get_users
+from api.controllers.user import create_user, deactivate_user_by_id, get_user_by_email, get_users
 from starlette.responses import JSONResponse
 from api.schemas.user import UserSchema
 

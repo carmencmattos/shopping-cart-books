@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status
 from pydantic.networks import EmailStr
-from api.cruds.cart import add_product_cart, calculate_cart, create_cart, delete_cart_by_email, get_cart_by_email, insert_product, remove_item_from_cart, update_product_cart
-from api.cruds.inventory import get_inventory_by_isbn
-from api.cruds.product import get_product_by_isbn
+from api.controllers.cart import add_product_cart, calculate_cart, create_cart, delete_cart_by_email, get_cart_by_email, insert_product, remove_item_from_cart, update_product_cart
+from api.controllers.inventory import get_inventory_by_isbn
+from api.controllers.product import get_product_by_isbn
 from api.schemas.cart import CartListSchema
 from api.utils import serialize
 from starlette.responses import JSONResponse

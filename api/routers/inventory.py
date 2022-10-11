@@ -1,5 +1,5 @@
 
-from api.cruds.inventory import update_inventory_by_isbn
+from api.controllers.inventory import update_inventory_by_isbn
 from api.schemas.inventory import InventoryUpdateSchema
 from api.server.database import db
 from api.utils import serialize

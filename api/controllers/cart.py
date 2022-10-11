@@ -5,8 +5,8 @@ from bson.objectid import ObjectId
 import logging
 from pydantic.networks import EmailStr
 from datetime import datetime
-from api.cruds.product import get_product_by_isbn
-from api.cruds.order import get_order_by_id
+from api.controllers.product import get_product_by_isbn
+from api.controllers.order import get_order_by_id
 
 logger = logging.getLogger(__name__)
 

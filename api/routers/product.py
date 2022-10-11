@@ -1,6 +1,6 @@
-from api.cruds.inventory import add_to_inventory
+from api.controllers.inventory import add_to_inventory
 from api.utils import serialize
-from api.cruds.product import create_product, get_product_by_id, get_product_by_title, update_product_by_isbn, delete_product_by_id
+from api.controllers.product import create_product, get_product_by_id, get_product_by_title, update_product_by_isbn, delete_product_by_id
 from api.schemas.product import ProductSchema, ProductUpdateSchema
 from fastapi import APIRouter, status
 from starlette.responses import JSONResponse

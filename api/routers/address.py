@@ -1,5 +1,5 @@
-from api.cruds.address import create_address, delete_address, get_address_by_id, get_addresses, set_principal_address
-from api.cruds.user import get_user_by_email
+from api.controllers.address import create_address, delete_address, get_address_by_id, get_addresses, set_principal_address
+from api.controllers.user import get_user_by_email
 from pydantic.networks import EmailStr
 from fastapi import APIRouter, status
 from starlette.responses import JSONResponse
