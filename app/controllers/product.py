@@ -1,5 +1,5 @@
-from api.schemas.product import ProductSchema, ProductUpdateSchema
-from api.server.database import db
+from app.schemas.product import ProductSchema, ProductUpdateSchema
+from app.server.database import db
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
 import logging

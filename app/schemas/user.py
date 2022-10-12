@@ -3,7 +3,7 @@ from pydantic.networks import EmailStr
 from datetime import datetime
 
 class UserSchema(BaseModel):
-    CPF: int = Field(unique=True, index=True)
+    cpf: int = Field(unique=True, index=True)
     name: str
     phone_number: int 
     email: EmailStr = Field(unique=True, index=True)

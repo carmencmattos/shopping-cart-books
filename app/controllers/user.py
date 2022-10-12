@@ -1,11 +1,10 @@
-from api.cruds.address import create_address
-from api.schemas.user import UserSchema
-from api.server.database import db
+from app.schemas.user import UserSchema
+from app.server.database import db
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
 import logging
 from pydantic.networks import EmailStr
-from api.utils import serialize
+from app.utils import serialize
 from passlib.context import CryptContext
 
 logger = logging.getLogger(__name__)
@@ -35,6 +34,12 @@ async def get_user_by_id(id: str):
 # Consultar um usuário pelo pelo seu email.
 async def get_user_by_email(email: EmailStr):
     user = await db.user_db.find_one({ 'email': email, 'active': True })
+    if user: 
+        return user
+
+# Consultar um usuário pelo pelo seu cpf.
+async def get_user_by_cpf(cpf: str):
+    user = await db.user_db.find_one({ 'cpf': cpf, 'active': True })
     if user: 
         return user
 

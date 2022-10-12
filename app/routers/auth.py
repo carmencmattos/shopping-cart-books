@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
-from api.cruds.auth import authentication
+from app.controllers.auth import authentication
 from starlette.responses import JSONResponse
-from api.config import config
+from app.config import config
 import jwt
 
 router = APIRouter(tags=['Auth'], prefix='/auth')

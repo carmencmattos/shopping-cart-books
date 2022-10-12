@@ -1,6 +1,6 @@
 from os import environ
 from motor.motor_asyncio import AsyncIOMotorClient
-from api.config import config
+from app.config import config
 import logging
 logging.basicConfig(level=logging.INFO)
 

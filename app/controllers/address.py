@@ -1,9 +1,9 @@
-from api.schemas.address import AddressSchema
-from api.server.database import db
+from app.schemas.address import AddressSchema
+from app.server.database import db
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
 import logging
-from api.utils import serialize
+from app.utils import serialize
 from pydantic.networks import EmailStr
 
 logger = logging.getLogger(__name__)

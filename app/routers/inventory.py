@@ -1,8 +1,8 @@
 
-from api.cruds.inventory import update_inventory_by_isbn
-from api.schemas.inventory import InventoryUpdateSchema
-from api.server.database import db
-from api.utils import serialize
+from app.controllers.inventory import update_inventory_by_isbn
+from app.schemas.inventory import InventoryUpdateSchema
+from app.server.database import db
+from app.utils import serialize
 from fastapi import APIRouter, status
 from starlette.responses import JSONResponse
 

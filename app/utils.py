@@ -1,7 +1,7 @@
-from api.schemas.cart import CartSchema
-from api.schemas.inventory import InventorySchema
-from api.schemas.address import AddressSchema
-from api.schemas.product import ProductSchema
+from app.schemas.cart import CartSchema
+from app.schemas.inventory import InventorySchema
+from app.schemas.address import AddressSchema
+from app.schemas.product import ProductSchema
 from .schemas.user import UserSchema
 from .schemas.product import ProductSchema
 class serialize:

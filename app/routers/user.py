@@ -1,9 +1,9 @@
 from pydantic.networks import EmailStr
-from api.utils import serialize
+from app.utils import serialize
 from fastapi import APIRouter, status
-from api.cruds.user import create_user, deactivate_user_by_id, get_user_by_email, get_users
+from app.controllers.user import create_user, get_user_by_cpf, get_user_by_email
 from starlette.responses import JSONResponse
-from api.schemas.user import UserSchema
+from app.schemas.user import UserSchema
 from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(tags=['User'], prefix='/user')
@@ -13,12 +13,17 @@ oauth_form = OAuth2PasswordRequestForm
 @router.post('/')
 async def create(user: UserSchema):
     email = user.email
-    user_data = await get_user_by_email(email)
-    if user_data:
+    user_email = await get_user_by_email(email)
+    if user_email:
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={'message': 'Este email já está cadastrado no sistema.'})
-
+    cpf = user.cpf
+    user_cpf = await get_user_by_cpf(cpf)
+    if user_cpf:
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content={'message': 'Este CPF já está cadastrado no sistema.'})
     create = await create_user(user)
     if create:
         user = serialize.user(create)

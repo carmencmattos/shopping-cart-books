@@ -1,12 +1,12 @@
 from fastapi import APIRouter, status
-from api.cruds.auth import get_admin
-from api.cruds.user import deactivate_user_by_id, get_user_by_email, get_users, get_users_disabled
+from app.controllers.auth import get_admin
+from app.controllers.user import deactivate_user_by_id, get_user_by_email, get_users, get_users_disabled
 from starlette.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import status, Depends
 from starlette.responses import JSONResponse
 from pydantic.networks import EmailStr
-from api.utils import serialize
+from app.utils import serialize
 
 router = APIRouter(tags=['Admin'], prefix='/admin/user')
 oauth_form = OAuth2PasswordRequestForm
