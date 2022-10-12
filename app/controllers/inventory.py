@@ -1,6 +1,6 @@
-from api.schemas.inventory import InventorySchema, InventoryUpdateSchema
-from api.schemas.product import ProductSchema
-from api.server.database import db
+from app.schemas.inventory import InventorySchema, InventoryUpdateSchema
+from app.schemas.product import ProductSchema
+from app.server.database import db
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
 import logging
@@ -57,6 +57,19 @@ async def update_inventory_by_isbn(isbn: str, inventory_fields: InventoryUpdateS
             product = await get_inventory_by_isbn(isbn)
             if product:
                 return product
+    except Exception as e:
+        logger.exception(f'Error: {e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+async def remove_quantity_from_inventory(isbn: str, quantity: int):
+    try:
+        inventory = await get_inventory_by_isbn(isbn)
+        if inventory and inventory['inventory'] >= quantity:
+            new_quantity = inventory['inventory'] - quantity
+            update_inventory = await db.inventory_db.update_one({ 'isbn': isbn }, { '$set': { 'inventory': new_quantity } })
+            if update_inventory.matched_count:
+                inventory = await get_inventory_by_isbn(isbn)
+                return inventory
     except Exception as e:
         logger.exception(f'Error: {e}')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

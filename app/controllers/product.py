@@ -1,5 +1,5 @@
-from api.schemas.product import ProductSchema, ProductUpdateSchema
-from api.server.database import db
+from app.schemas.product import ProductSchema, ProductUpdateSchema
+from app.server.database import db
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
 import logging
@@ -46,7 +46,8 @@ async def update_product_by_isbn(isbn: str, product_fields: ProductUpdateSchema)
         product = await get_product_by_isbn(isbn)
         if product:
             return product
-
+            
+# Atualizar produto pelo ID
 async def delete_product_by_id(id: str):
     delete_product = await db['product'].delete_one({ '_id': ObjectId(id) })
     if  delete_product.deleted_count == 1:

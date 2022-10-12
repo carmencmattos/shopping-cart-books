@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from api.server.database import connect, disconnect
-from api.routers import routers
+from app.server.database import connect, disconnect
+from app.routers import routers
 
 app = FastAPI(title='Carrinho de compras - Livros')
 
