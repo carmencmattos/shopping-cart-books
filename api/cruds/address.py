@@ -60,7 +60,7 @@ async def get_addresses(email: EmailStr):
 async def delete_address(address_id):
     try:
         address = await db.address_db.delete_one(
-            {'_id': address_id}
+            {'_id': ObjectId(address_id)}
         )
         if address.deleted_count:
             return {'status': 'address deleted'}

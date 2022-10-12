@@ -3,8 +3,8 @@ POST http://127.0.0.1:8000/user HTTP/1.1
 content-type: application/json
 
 {
-	"CPF": 12345678910,
-    "name": "Luiza",
+	"CPF": 123456789230,
+    "name": "Luiza teste",
     "phone_number": 2142365125,
     "email": "carmencmattos@gmail.com",
     "password": "Aurora",

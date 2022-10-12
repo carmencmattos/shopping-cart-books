@@ -3,3 +3,4 @@ __pycache__/
 venv/
 virtualenv/
 .DS_Store
+models-req.txt

@@ -6,4 +6,6 @@ email-validator
 python-decouple
 starlette
 datetime
-numpy
+python-multipart
+PyJWT
+passlib
