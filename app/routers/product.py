@@ -1,7 +1,7 @@
-from api.controllers.inventory import add_to_inventory
-from api.utils import serialize
-from api.controllers.product import create_product, get_product_by_id, get_product_by_title, update_product_by_isbn, delete_product_by_id
-from api.schemas.product import ProductSchema, ProductUpdateSchema
+from app.controllers.inventory import add_to_inventory
+from app.utils import serialize
+from app.controllers.product import create_product, get_product_by_id, get_product_by_title, update_product_by_isbn, delete_product_by_id
+from app.schemas.product import ProductSchema, ProductUpdateSchema
 from fastapi import APIRouter, status
 from starlette.responses import JSONResponse
 import logging

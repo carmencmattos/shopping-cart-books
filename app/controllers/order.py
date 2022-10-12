@@ -1,4 +1,4 @@
-from api.server.database import db
+from app.server.database import db
 from bson.objectid import ObjectId
 from pydantic.networks import EmailStr
 

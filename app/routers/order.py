@@ -2,9 +2,9 @@ from fastapi import APIRouter, status
 from pydantic.networks import EmailStr
 from starlette.responses import JSONResponse
 
-from api.controllers.order import get_order_by_email
-from api.controllers.cart import calculate_cart
-from api.utils import serialize
+from app.controllers.order import get_order_by_email
+from app.controllers.cart import calculate_cart
+from app.utils import serialize
 
 router = APIRouter(tags=['Order'], prefix='/order')
 
