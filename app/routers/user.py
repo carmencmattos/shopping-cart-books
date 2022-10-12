@@ -17,7 +17,7 @@ async def create(user: UserSchema):
     email = user.email
     user_email = await get_user_by_email(email)
     if user_email:
-       return JSONResponse(
+        return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={'message': 'Este email já está cadastrado no sistema.'})
     cpf = user.cpf
@@ -31,7 +31,6 @@ async def create(user: UserSchema):
         user = serialize.user(create)
         return JSONResponse(status_code=status.HTTP_200_OK, content=user)
 
-    
 
 # Pesquisar cliente por email
 
@@ -41,4 +40,3 @@ async def get_user_email(email: EmailStr):
     if user_data:
         user = serialize.user(user_data)
         return JSONResponse(status_code=status.HTTP_200_OK, content=user)
-
