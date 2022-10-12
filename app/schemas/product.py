@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field, confloat, conint
 from datetime import datetime
 
+
 class ProductSchema(BaseModel):
     title: str
     author: str
@@ -18,6 +19,7 @@ class ProductSchema(BaseModel):
     quantity: conint(gt=0)
     created_at: datetime = Field(datetime.now())
     updated_at: datetime = Field(datetime.now())
+
 
 class ProductUpdateSchema(BaseModel):
     title: Optional[str]
