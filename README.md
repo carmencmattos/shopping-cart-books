@@ -140,16 +140,25 @@ As requisições para a API seguem os padrões abaixo:<br />
 
 **Cliente:**
 - Para cadastrar um cliente, use POST: ```/user``` 
+
+![createuser](https://user-images.githubusercontent.com/99370978/195463875-67112171-07e4-4367-bf28-87508ef856f3.png)
+
 - Para pesquisar um cliente pelo e-mail, use GET: ```/user/{email}``` 
 
 **Endereço:**
 - Para adicionar um novo endereço a um usuário, use POST: ```/address```
+
+![address](https://user-images.githubusercontent.com/99370978/195463966-8abfae7f-cce8-41a1-bd8e-a6dd94972757.png)
+
 - Para buscar todos os endereços vinculados a um e-mail, use GET: ```/address/{email}```
 - Para selecionar o endereço de entrega, use PATCH: ```/address/delivery/{id}```
 - Para deletar o endereço de um usário pelo id do endereço, use DELETE: ```/address/{id_address}```
 
 **Produto:**
 - Para cadastrar um produto, use POST: ```/product```
+
+![createproduct](https://user-images.githubusercontent.com/99370978/195464050-4ca8fa0e-3d00-4a88-8bc6-7f7ac0997352.png)
+
 - Para pesquisar um produto pelo ID do MongoDB, use GET: ```/product/{id}```
 - Para pesquisar um produto pelo nome/título, use GET: ```/product/title/{title}```
 - Para pesquisar todos os produtos, use GET: ```/product```
