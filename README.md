@@ -334,14 +334,14 @@ source venv/bin/activate
 • Instalação dos requisitos:
 ```
 Windows/Linux
-pip install -r requirements.txt
+pip install -r requirements.txt  
 ```
 <br>
 			
 • Executar
 ```
 Windows/Linux
-uvicorn main:app --reload
+uvicorn main:app --reload --env-file .env
 ```
 
 ## Autorização e autenticação

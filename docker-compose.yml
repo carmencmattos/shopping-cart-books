@@ -8,7 +8,7 @@ services:
     depends_on:
       - database
     environment:
-      - DB_HOST=mongodb+srv://codegirls:Luiza@code123@cluster0.kbjdwqd.mongodb.net/?retryWrites=true&w=majority
+      - DB_HOST=mongodb+srv://codegirls:DlnMigTzaTgLCwid@cluster0.kbjdwqd.mongodb.net/?retryWrites=true&w=majority
   database:
     image: mongo
     ports:
